@@ -157,7 +157,7 @@ namespace GerenciadorComprasPublicas.Controllers
             var dataEstoqueEsgotado = dataFinalUltimaLicitacao.AddDays(diasEstoqueDuracao);
 
             // Calcular a data para iniciar o novo processo licitatório
-            var dataInicioNovoProcesso = dataEstoqueEsgotado.AddDays(-tempoMedioProcessoLicitatorio - 60);
+            var dataInicioNovoProcesso = dataEstoqueEsgotado.AddDays(-tempoMedioProcessoLicitatorio - (tempoMedioProcessoLicitatorio * 0.5));
 
 
             var viewModel = new PlanejamentoItemViewModel

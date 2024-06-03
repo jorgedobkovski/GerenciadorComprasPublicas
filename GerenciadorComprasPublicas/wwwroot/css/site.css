@@ -16,3 +16,45 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.card.card-dashboard {
+    margin: 10px;
+    padding: 20px;
+    border-radius: 10px;
+    color: #fff;
+}
+
+.card-1 {
+    background-color: #007bff;
+}
+
+.card-2 {
+    background-color: #28a745;
+}
+
+.card-3 {
+    background-color: #ffc107;
+}
+
+.card-4 {
+    background-color: #dc3545;
+}
+
+.card-5 {
+    background-color: #17a2b8;
+}
+
+.card-6 {
+    background-color: #6c757d;
+}
+
+.card-highlight {
+    font-size: 1.2em;
+    padding: 30px;
+    border: 2px solid #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.chart-container {
+    margin: 20px;
+}

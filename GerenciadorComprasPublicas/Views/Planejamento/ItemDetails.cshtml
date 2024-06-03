@@ -5,33 +5,121 @@
 <div class="card">
     <div class="card-header">
         Detalhes do Item: @Model.ItemNome
-    </div>
-    <dl class="row">
-        <dt class="col-sm-5">Média de Consumo Diário</dt>
-        <dd class="col-sm-5">@ViewBag.MediaConsumo</dd>
-
-        <dt class="col-sm-5">Tempo Médio do Processo Licitatório (dias)</dt>
-        <dd class="col-sm-5">@ViewBag.TempoMedioProcessoLicitatorio</dd>
-
-        <dt class="col-sm-5">Data Final da Última Licitação</dt>
-        <dd class="col-sm-5">@ViewBag.DataFinalUltimaLicitacao.ToShortDateString()</dd>
-
-        <dt class="col-sm-5">Duração Estimada do Estoque (dias)</dt>
-        <dd class="col-sm-5">@ViewBag.DiasEstoqueDuracao</dd>
-
-        <dt class="col-sm-5">Data Estimada para Esgotamento do Estoque</dt>
-        <dd class="col-sm-5">@ViewBag.DataEstoqueEsgotado.ToShortDateString()</dd>
-
-        <dt class="col-sm-5">Melhor Data para Iniciar Novo Processo Licitatório</dt>
-        <dd class="col-sm-5">@ViewBag.DataInicioNovoProcesso.ToShortDateString()</dd>
-    </dl>
+    </div>    
     <div class="card-body">
         <h5 class="card-title">Nome: @Model.ItemNome</h5>
         <p class="card-text">Descrição: @Model.Descricao</p>
         <p class="card-text">Categoria: @Model.Categoria</p>
         <p class="card-text">Unidade de Medida: @Model.UnidadeMedida</p>
-        <!-- Adicione outros atributos conforme necessário -->
+        <p class="card-text">Data Final da Última Licitação: @ViewBag.DataFinalUltimaLicitacao.ToShortDateString()</p>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="card card-dashboard card-1">
+                    <h5>Média de Consumo Diário</h5>
+                    <p>@ViewBag.MediaConsumo</p>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="card card-dashboard card-3">
+                    <h5>Tempo Médio do Processo Licitatório (dias)</h5>
+                    <p>@ViewBag.TempoMedioProcessoLicitatorio</p>
+                </div>
+            </div>            
+            <div class="col-sm-6">
+                <div class="card card-dashboard card-4">
+                    <h5>Duração Estimada do Estoque (dias)</h5>
+                    <p>@ViewBag.DiasEstoqueDuracao</p>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="card card-dashboard card-5">
+                    <h5>Data Estimada para Esgotamento do Estoque</h5>
+                    <p>@ViewBag.DataEstoqueEsgotado.ToShortDateString()</p>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <div class="card card-dashboard card-highlight card-2 text-center">
+                    <h5>Melhor Data para Iniciar Novo Processo Licitatório</h5>
+                    <h2>@ViewBag.DataInicioNovoProcesso.ToShortDateString()</h2>
+                    <p style="font-size:12px">Considerando uma margem de segurança de 50% do número médio de dias de duração do processo.</p>
+                </div>
+            </div>
+            
+            <!-- Gráfico das Datas Importantes na Linha do Tempo -->
+            <div class="col-sm-12 chart-container">
+                <canvas id="timelineChart"></canvas>
+            </div>
+        </div>
     </div>
 </div>
 
 <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+
+<!-- Incluindo a biblioteca Chart.js e adaptadores -->
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/min/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.0"></script>
+
+<script>
+    const dataFinalLicitacao = new Date("@ViewBag.DataFinalUltimaLicitacao.ToString("MM-dd-yyyy")");
+    const dataEsgotamentoEstoque = new Date("@ViewBag.DataEstoqueEsgotado.ToString("MM-dd-yyyy")");
+    const dataNovoProcesso = new Date("@ViewBag.DataInicioNovoProcesso.ToString("MM-dd-yyyy")");
+
+    // Gráfico das Datas Importantes na Linha do Tempo
+    new Chart(document.getElementById('timelineChart'), {
+        type: 'line',
+        data: {
+            labels: [
+                dataFinalLicitacao,
+                dataEsgotamentoEstoque,
+                dataNovoProcesso
+            ],
+            datasets: [
+                {
+                    label: 'Data Final da Última Licitação',
+                    data: [{ x: dataFinalLicitacao, y: 0 }],
+                    backgroundColor: '#ffc107',
+                    borderColor: '#ffc107',
+                    fill: false,
+                    showLine: false,
+                    pointRadius: 10
+                },
+                {
+                    label: 'Data Estimada para Esgotamento do Estoque',
+                    data: [{ x: dataEsgotamentoEstoque, y: 0 }],
+                    backgroundColor: '#17a2b8',
+                    borderColor: '#17a2b8',
+                    fill: false,
+                    showLine: false,
+                    pointRadius: 10
+                },
+                {
+                    label: 'Melhor Data para Iniciar Novo Processo Licitatório',
+                    data: [{ x: dataNovoProcesso, y: 0 }],
+                    backgroundColor: '#28a745',
+                    borderColor: '#28a745',
+                    fill: false,
+                    showLine: false,
+                    pointRadius: 10
+                }
+            ]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'day'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Datas'
+                    }
+                },
+                y: {
+                    display: false
+                }
+            }
+        }
+    });
+</script>
