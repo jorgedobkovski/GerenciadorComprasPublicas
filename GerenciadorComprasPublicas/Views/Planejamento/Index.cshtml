@@ -1,0 +1,29 @@
+﻿@model List<GerenciadorComprasPublicas.Models.ViewModels.PlanejamentoAnualViewModel>
+
+<h1>Planejamentos Anuais</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Secretaria</th>
+            <th>Ano</th>
+            <th>Data de Criação</th>
+            <th>Descrição</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var planejamento in Model)
+        {
+            <tr>
+                <td>@planejamento.SecretariaNome</td>
+                <td>@planejamento.Ano</td>
+                <td>@planejamento.DataCriacao.ToShortDateString()</td>
+                <td>@planejamento.Descricao</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@planejamento.Id" class="btn btn-primary">Detalhes</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

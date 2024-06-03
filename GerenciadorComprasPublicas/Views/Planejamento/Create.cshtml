@@ -1,0 +1,97 @@
+﻿@model GerenciadorComprasPublicas.Models.ViewModels.PlanejamentoAnualViewModel
+
+@{
+    ViewData["Title"] = "Create Planejamento Anual";
+}
+
+<h2>Create Planejamento Anual</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        @Html.LabelFor(model => model.SecretariaId, new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.SecretariaId, (SelectList)ViewBag.SecretariaId, "Select Secretaria", new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Ano, new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Ano, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.DataCriacao, new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.DataCriacao, new { htmlAttributes = new { @class = "form-control" } })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(model => model.Descricao, new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextAreaFor(model => model.Descricao, new { @class = "form-control", rows = 3 })
+        </div>
+    </div>
+    <div class="form-group">
+        <h4>Itens Planejados</h4>
+        <div id="itensPlanejadosContainer">
+            <!-- This section will be dynamically populated with JavaScript -->
+        </div>
+        <button type="button" class="btn btn-primary" onclick="addItem()">Add Item</button>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" class="btn btn-default" />
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script type="text/javascript">
+        var itemIndex = 0;
+
+        function addItem() {
+            var container = document.getElementById("itensPlanejadosContainer");
+
+            var itemHtml = `
+                        <div class="form-group" id="item-${itemIndex}">
+                            <label class="control-label col-md-2">Item</label>
+                            <div class="col-md-10">
+                                <select name="ItensPlanejados[${itemIndex}].ItemId" class="form-control">
+        @foreach (var item in (SelectList)ViewBag.ItemId)
+        {
+                                            <option value="@item.Value">@item.Text</option>
+        }
+                                </select>
+                            </div>
+                            <label class="control-label col-md-2">Quantidade Planejada</label>
+                            <div class="col-md-10">
+                                <input type="number" name="ItensPlanejados[${itemIndex}].QuantidadePlanejada" class="form-control" />
+                            </div>
+                            <label class="control-label col-md-2">Valor Estimado</label>
+                            <div class="col-md-10">
+                                <input type="number" step="0.01" name="ItensPlanejados[${itemIndex}].ValorEstimado" class="form-control" />
+                            </div>
+                            <label class="control-label col-md-2">Valor Gasto</label>
+                            <div class="col-md-10">
+                                <input type="number" step="0.01" name="ItensPlanejados[${itemIndex}].ValorGasto" class="form-control" />
+                            </div>
+                            <label class="control-label col-md-2">Data Última Atualização</label>
+                            <div class="col-md-10">
+                                <input type="date" name="ItensPlanejados[${itemIndex}].DataUltimaAtualizacao" class="form-control" />
+                            </div>
+                            <button type="button" class="btn btn-danger" onclick="removeItem(${itemIndex})">Remove</button>
+                        </div>
+                    `;
+
+            container.insertAdjacentHTML("beforeend", itemHtml);
+            itemIndex++;
+        }
+
+        function removeItem(index) {
+            var item = document.getElementById(`item-${index}`);
+            item.remove();
+        }
+    </script>
+}

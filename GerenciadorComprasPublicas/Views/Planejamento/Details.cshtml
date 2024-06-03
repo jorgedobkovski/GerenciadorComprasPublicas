@@ -1,0 +1,37 @@
+﻿@model GerenciadorComprasPublicas.Models.ViewModels.PlanejamentoAnualViewModel
+
+<h1>Detalhes do Planejamento Anual</h1>
+
+<h2>@Model.Ano</h2>
+<p>@Model.Descricao</p>
+
+<h3>Itens Planejados</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Item</th>
+            <th>Quantidade Planejada</th>
+            <th>Valor Estimado</th>
+            <th>Valor Gasto</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.ItensPlanejados)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.ItemNome</td>
+                <td>@item.QuantidadePlanejada</td>
+                <td>@item.ValorEstimado.ToString("C")</td>
+                <td>@item.ValorGasto.ToString("C")</td>
+                <td>
+                    <a asp-action="ItemDetails" asp-route-id="@item.Id" class="btn btn-primary">Detalhes</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Index" class="btn btn-secondary">Voltar</a>

@@ -1,0 +1,37 @@
+﻿@model GerenciadorComprasPublicas.Models.ViewModels.PlanejamentoItemViewModel
+
+<h1>Detalhes do Item</h1>
+
+<div class="card">
+    <div class="card-header">
+        Detalhes do Item: @Model.ItemNome
+    </div>
+    <dl class="row">
+        <dt class="col-sm-5">Média de Consumo Diário</dt>
+        <dd class="col-sm-5">@ViewBag.MediaConsumo</dd>
+
+        <dt class="col-sm-5">Tempo Médio do Processo Licitatório (dias)</dt>
+        <dd class="col-sm-5">@ViewBag.TempoMedioProcessoLicitatorio</dd>
+
+        <dt class="col-sm-5">Data Final da Última Licitação</dt>
+        <dd class="col-sm-5">@ViewBag.DataFinalUltimaLicitacao.ToShortDateString()</dd>
+
+        <dt class="col-sm-5">Duração Estimada do Estoque (dias)</dt>
+        <dd class="col-sm-5">@ViewBag.DiasEstoqueDuracao</dd>
+
+        <dt class="col-sm-5">Data Estimada para Esgotamento do Estoque</dt>
+        <dd class="col-sm-5">@ViewBag.DataEstoqueEsgotado.ToShortDateString()</dd>
+
+        <dt class="col-sm-5">Melhor Data para Iniciar Novo Processo Licitatório</dt>
+        <dd class="col-sm-5">@ViewBag.DataInicioNovoProcesso.ToShortDateString()</dd>
+    </dl>
+    <div class="card-body">
+        <h5 class="card-title">Nome: @Model.ItemNome</h5>
+        <p class="card-text">Descrição: @Model.Descricao</p>
+        <p class="card-text">Categoria: @Model.Categoria</p>
+        <p class="card-text">Unidade de Medida: @Model.UnidadeMedida</p>
+        <!-- Adicione outros atributos conforme necessário -->
+    </div>
+</div>
+
+<a asp-action="Index" class="btn btn-secondary">Voltar</a>
