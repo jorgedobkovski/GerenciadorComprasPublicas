@@ -157,11 +157,21 @@ namespace GerenciadorComprasPublicas.Controllers
             var dataEstoqueEsgotado = dataFinalUltimaLicitacao.AddDays(diasEstoqueDuracao);
 
             // Calcular a data para iniciar o novo processo licitatório
-            var dataInicioNovoProcesso = dataEstoqueEsgotado.AddDays(-tempoMedioProcessoLicitatorio - (tempoMedioProcessoLicitatorio * 0.5));
+            var dataInicioNovoProcesso = dataEstoqueEsgotado.AddDays(-180);
+
+            var licitacoes = await _context.Licitacoes
+                .Where(l => l.SecretariaId == item.PlanejamentoAnual.SecretariaId && l.ItemId == item.Id)
+                .OrderByDescending(l => l.DataInicio)
+                .Take(3)
+                .ToListAsync();
 
 
             var viewModel = new PlanejamentoItemViewModel
             {
+                Id = item.Id,
+                ValorEstimado = item.ValorEstimado,
+                ValorGasto = item.ValorGasto,
+                QuantidadePlanejada = item.QuantidadePlanejada,
                 ItemId = item.ItemId,
                 ItemNome = item.Item.Nome,
                 Descricao = item.Item.Descricao,
@@ -176,6 +186,8 @@ namespace GerenciadorComprasPublicas.Controllers
             ViewBag.DiasEstoqueDuracao = diasEstoqueDuracao;
             ViewBag.DataEstoqueEsgotado = dataEstoqueEsgotado;
             ViewBag.DataInicioNovoProcesso = dataInicioNovoProcesso;
+            ViewBag.Amostragem = licitacoes;
+            ViewBag.QuantidadeItemUltimaLicitacao = ultimaLicitacao.QuantidadeItem;
 
             return View(viewModel);
         }

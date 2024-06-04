@@ -14,18 +14,49 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background-color: #dce0e6;
+}
+
+.card-main{
+    background-color:white;
+    padding: 25px;
+    border-radius:25px;
+    margin-bottom:25px;
 }
 
 .card.card-dashboard {
-    margin: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
     padding: 20px;
-    border-radius: 10px;
+    border-radius: 20px;
     color: #fff;
+    border: none;
+}
+
+.card-tabela {
+    border-radius: 25px;
+    background-color: #e0e0e0;
+}
+
+.card-tabela .table{
+    border-radius: 25px;
+}
+
+.navbar {
+    background-color: #2b4c7e;
+}
+
+.navbar-brand img{
+    height:40px;
+}
+
+.nav-link {
+    color: white;
 }
 
 .card-1 {
-    background-color: #007bff;
+    background-color: #482344;
 }
 
 .card-2 {
@@ -33,15 +64,15 @@ body {
 }
 
 .card-3 {
-    background-color: #ffc107;
+    background-color: #fab243;
 }
 
 .card-4 {
-    background-color: #dc3545;
+    background-color: #2b5166;
 }
 
 .card-5 {
-    background-color: #17a2b8;
+    background-color: #e02130;
 }
 
 .card-6 {
@@ -57,4 +88,39 @@ body {
 
 .chart-container {
     margin: 20px;
+}
+
+.btn-custom {
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #567ebb;
+    color: white;
+    padding: 15px;
+}
+    .btn-custom:hover {
+        background-color: #606d80;
+        color: white;
+    }
+
+    .btn-custom i {
+        margin-right: 8px;
+    }
+
+
+#dataInicioNovoProcesso {
+    background: none;
+    border: none;
+    color: white;
+    margin-top: 0;
+    margin-bottom: .5rem;
+    font-weight: 500;
+    line-height: 1.2;
+    font-size: calc(1.3rem + .6vw);
+    width:165px;
+}
+
+#dataInicioNovoProcesso:focus{
+    border:none;
 }

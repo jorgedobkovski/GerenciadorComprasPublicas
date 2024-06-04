@@ -8,6 +8,8 @@ namespace GerenciadorComprasPublicas.Models
         public int LicitacaoId { get; set; }
         [Required]
         public int ItemId { get; set; }
+        public string NumeroProcesso { get; set; }
+        public string NumeroCertame { get; set; }
         public virtual Item Item { get; set; }
         public int QuantidadeItem { get; set; }
         [Required]

@@ -1,54 +1,127 @@
 ﻿@model GerenciadorComprasPublicas.Models.ViewModels.PlanejamentoItemViewModel
+@{
+    ViewData["Title"] = "Detalhes do Item";
+    var saldoDisponivel = Model.ValorEstimado - Model.ValorGasto;
+    var percentualGasto = ((Model.ValorGasto / Model.ValorEstimado) * 100);
+    var percentualSaldoDisponivel = 100 - percentualGasto;
+    var dataEstoqueEsgotado = (DateTime)ViewBag.DataEstoqueEsgotado;
+    var dataInicioNovoProcesso = (DateTime)ViewBag.DataInicioNovoProcesso;
+    var margemSeguranca = dataEstoqueEsgotado.AddDays(-180);
+    var margemCritica = dataEstoqueEsgotado.AddDays(-30);
+}
+<div class="card-main">
+    <div class="row">
+        <div class="col-md-12">
 
-<h1>Detalhes do Item</h1>
+            <h1>
+                @Model.ItemNome
+            </h1>
+            <dl class="row">
+                <dt class="col-sm-3">Descrição</dt>
+                <dd class="col-sm-9">@Model.Descricao</dd>
 
-<div class="card">
-    <div class="card-header">
-        Detalhes do Item: @Model.ItemNome
-    </div>    
-    <div class="card-body">
-        <h5 class="card-title">Nome: @Model.ItemNome</h5>
-        <p class="card-text">Descrição: @Model.Descricao</p>
-        <p class="card-text">Categoria: @Model.Categoria</p>
-        <p class="card-text">Unidade de Medida: @Model.UnidadeMedida</p>
-        <p class="card-text">Data Final da Última Licitação: @ViewBag.DataFinalUltimaLicitacao.ToShortDateString()</p>
-        <div class="row">
-            <div class="col-sm-6">
-                <div class="card card-dashboard card-1">
-                    <h5>Média de Consumo Diário</h5>
-                    <p>@ViewBag.MediaConsumo</p>
+                <dt class="col-sm-3">Categoria</dt>
+                <dd class="col-sm-9">@Model.Categoria</dd>
+
+                <dt class="col-sm-3">Unidade de Fornecimento</dt>
+                <dd class="col-sm-9">@Model.UnidadeMedida</dd>
+
+                <dt class="col-sm-3">Data Final da Última Licitação</dt>
+                <dd class="col-sm-9">@ViewBag.DataFinalUltimaLicitacao.ToString("dd/MM/yyyy")</dd>
+            </dl>
+        </div>
+        <h3>Planejamento</h3>
+        <div>
+            <dl class="row">
+                <dt class="col-sm-3">Valor Planejado</dt>
+                <dd class="col-sm-9">@Model.ValorEstimado.ToString("C")</dd>
+
+                <dt class="col-sm-3">Valor Já Gasto</dt>
+                <dd class="col-sm-9">@Model.ValorGasto.ToString("C") (@percentualGasto.ToString("F2")%)</dd>
+
+                <dt class="col-sm-3">Saldo Disponível</dt>
+                <dd class="col-sm-9">@saldoDisponivel.ToString("C") (@percentualSaldoDisponivel.ToString("F2")%)</dd>
+            </dl>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card card-dashboard card-1">
+                <h5>Consumo médio diário (@Model.UnidadeMedida/dia)</h5>
+                <h3>@ViewBag.MediaConsumo.ToString("F4")</h3>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="card card-dashboard card-3">
+                <h5>Duraçao médio do processo licitatório</h5>
+                <h3>@ViewBag.TempoMedioProcessoLicitatorio.ToString("F2") dias</h3>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="card card-dashboard card-4">
+                <div class="row">
+                    <div class="col-sm-6 text-">
+                        <h5>Quantidade</h5>
+                        <h3>@ViewBag.QuantidadeItemUltimaLicitacao</h3>
+                    </div>
+                    <div class="col-sm-6">
+                        <h5>Duração Estimada</h5>
+                        <h3>@ViewBag.DiasEstoqueDuracao.ToString("F2") dias</h3>
+                    </div>
                 </div>
             </div>
-            <div class="col-sm-6">
-                <div class="card card-dashboard card-3">
-                    <h5>Tempo Médio do Processo Licitatório (dias)</h5>
-                    <p>@ViewBag.TempoMedioProcessoLicitatorio</p>
-                </div>
-            </div>            
-            <div class="col-sm-6">
-                <div class="card card-dashboard card-4">
-                    <h5>Duração Estimada do Estoque (dias)</h5>
-                    <p>@ViewBag.DiasEstoqueDuracao</p>
-                </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="card card-dashboard card-5">
+                <h5>Data estimada para esgotamento do estoque</h5>
+                <h3>@ViewBag.DataEstoqueEsgotado.ToShortDateString()</h3>
             </div>
-            <div class="col-sm-6">
-                <div class="card card-dashboard card-5">
-                    <h5>Data Estimada para Esgotamento do Estoque</h5>
-                    <p>@ViewBag.DataEstoqueEsgotado.ToShortDateString()</p>
+        </div>
+        <div class="col-sm-12">
+            <div class="card card-dashboard card-highlight card-2 text-center">
+                <h5 id="tituloDataSugerida">Melhor Data para Iniciar Novo Processo Licitatório</h5>
+                <div>
+                    <input value="@ViewBag.DataInicioNovoProcesso.ToShortDateString()" type="text" id="dataInicioNovoProcesso" aria-label="Data de Início do Novo Processo" aria-describedby="basic-addon2"> <i id="retornarDataBtn" class="bi bi-arrow-clockwise d-none" onclick="restaurarDataInicial()"></i>
                 </div>
+                <p style="font-size:12px">Considerando uma margem de segurança de 180 dias precedentes ao esgotamento do estoque.</p>
             </div>
-            <div class="col-sm-12">
-                <div class="card card-dashboard card-highlight card-2 text-center">
-                    <h5>Melhor Data para Iniciar Novo Processo Licitatório</h5>
-                    <h2>@ViewBag.DataInicioNovoProcesso.ToShortDateString()</h2>
-                    <p style="font-size:12px">Considerando uma margem de segurança de 50% do número médio de dias de duração do processo.</p>
-                </div>
+        </div>
+        <div class="col-md-12">
+            <div class="card card-dashboard card-tabela">
+                <h3 class="text-black">Amostragem (últimas três compras semelhantes)</h3>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Processo</th>
+                            <th>Certame</th>
+                            <th>Data de Início</th>
+                            <th>Data de Término</th>
+                            <th>Quantidade</th>
+                            <th>Valor estimado</th>
+                            <th>Valor homologado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var licitacao in ViewBag.Amostragem)
+                        {
+                            <tr>
+                                <td>@licitacao.NumeroProcesso</td>
+                                <td>@licitacao.NumeroCertame</td>
+                                <td>@licitacao.DataInicio.ToString("dd-MM-yyyy")</td>
+                                <td>@licitacao.DataFim.ToString("dd-MM-yyyy")</td>
+                                <td>@licitacao.QuantidadeItem</td>
+                                <td>@licitacao.ValorEstimadoTotal</td>
+                                <td>@licitacao.ValorHomologadoTotal</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
-            
-            <!-- Gráfico das Datas Importantes na Linha do Tempo -->
-            <div class="col-sm-12 chart-container">
-                <canvas id="timelineChart"></canvas>
-            </div>
+        </div>
+
+        <!-- Gráfico das Datas Importantes na Linha do Tempo -->
+        <div class="col-sm-12 chart-container">
+            <canvas id="timelineChart"></canvas>
         </div>
     </div>
 </div>
@@ -59,6 +132,9 @@
 <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/min/moment.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.0"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
 
 <script>
     const dataFinalLicitacao = new Date("@ViewBag.DataFinalUltimaLicitacao.ToString("MM-dd-yyyy")");
@@ -122,4 +198,56 @@
             }
         }
     });
+
+    $(document).ready(function () {
+        $(document).on('blur', '#dataInicioNovoProcesso', function () {
+            const dataEstoqueEsgotado = new Date("@dataEstoqueEsgotado.ToString("yyyy-MM-dd")");
+            const margemSeguranca = new Date("@margemSeguranca.ToString("yyyy-MM-dd")");
+            const margemCritica = new Date("@margemCritica.ToString("yyyy-MM-dd")");
+
+            const dataInicioNovoProcesso = $('#dataInicioNovoProcesso').val();
+            const dataInicioNovoProcessoParts = dataInicioNovoProcesso.split('/');
+            const novaData = new Date(`${dataInicioNovoProcessoParts[2]}-${dataInicioNovoProcessoParts[1]}-${dataInicioNovoProcessoParts[0]}`);
+
+            const card = $('.card-highlight');
+            const reloadBtn = $('#retornarDataBtn');
+
+            if (novaData >= margemCritica) {
+                card.removeClass('card-2 card-warning').addClass('card-danger');
+                reloadBtn.removeClass('d-none');
+                alert('A data está muito próxima do esgotamento do estoque!');
+                tituloDataSugerida.textContent = 'Data Crítica para Iniciar Novo Processo Licitatório';
+            } else if (novaData > margemSeguranca && novaData < margemCritica) {
+                card.removeClass('card-2 card-danger').addClass('card-warning');
+                reloadBtn.removeClass('d-none');
+                alert('A data está abaixo da margem de segurança!');
+                tituloDataSugerida.textContent = 'Data de Alerta para Iniciar Novo Processo Licitatório';
+            } else{
+                card.removeClass('card-warning card-danger').addClass('card-2');
+                reloadBtn.removeClass('d-none');
+                tituloDataSugerida.textContent = 'Melhor Data para Iniciar Novo Processo Licitatório';
+            }
+        });
+    });
+
+    function restaurarDataInicial() {
+        const dataInicial = '@ViewBag.DataInicioNovoProcesso.ToShortDateString()';
+        const card = $('.card-highlight');
+        const reloadBtn = $('#retornarDataBtn');
+        $('#dataInicioNovoProcesso').val(dataInicial);
+        card.removeClass('card-warning card-danger').addClass('card-2');
+        reloadBtn.addClass('d-none');
+        tituloDataSugerida.textContent = 'Melhor Data para Iniciar Novo Processo Licitatório';
+    }
 </script>
+
+<style>
+
+    .card-warning {
+        background-color: #fab243;
+    }
+
+    .card-danger {
+        background-color: #e02130;
+    }
+</style>

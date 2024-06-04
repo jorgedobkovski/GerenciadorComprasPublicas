@@ -1,6 +1,8 @@
 ﻿using GerenciadorComprasPublicas.Data;
 using GerenciadorComprasPublicas.Models;
+using GerenciadorComprasPublicas.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace GerenciadorComprasPublicas.Controllers
@@ -18,7 +20,30 @@ namespace GerenciadorComprasPublicas.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var planejamentos = _context.PlanejamentosAnuais
+                .Include(p => p.ItensPlanejados)
+                .Include(P => P.Secretaria)
+                .ToList();
+            var viewModel = planejamentos.Select(p => new PlanejamentoAnualViewModel
+            {
+                Id = p.Id,
+                SecretariaId = p.SecretariaId,
+                SecretariaNome = p.Secretaria.Nome,
+                Ano = p.Ano,
+                DataCriacao = p.DataCriacao,
+                Descricao = p.Descricao,
+                ItensPlanejados = p.ItensPlanejados.Select(pi => new PlanejamentoItemViewModel
+                {
+                    Id = pi.Id,
+                    ItemId = pi.ItemId,
+                    QuantidadePlanejada = pi.QuantidadePlanejada,
+                    ValorEstimado = pi.ValorEstimado,
+                    ValorGasto = pi.ValorGasto,
+                    DataUltimaAtualizacao = pi.DataUltimaAtualizacao
+                }).ToList()
+            }).ToList();
+
+            return View(viewModel);
         }
 
         public IActionResult Privacy()
@@ -93,13 +118,13 @@ namespace GerenciadorComprasPublicas.Controllers
 
             var licitacoes = new List<Licitacao>
             {
-                new Licitacao { SecretariaId = secretarias[0].SecretariaId, ItemId = items[0].ItemId, FornecedorId = fornecedores[0].FornecedorId, QuantidadeItem = 40, ValorEstimadoItem = 30.00m, ValorHomologadoItem = 24.75m, ValorEstimadoTotal = 40*30.00m, ValorHomologadoTotal = 40*24.75m, DataInicio = new DateTime(2023, 1, 18), DataFim = new DateTime(2023, 2, 15), Status = "Concluído" },
-                new Licitacao { SecretariaId = secretarias[0].SecretariaId, ItemId = items[0].ItemId, FornecedorId = fornecedores[0].FornecedorId, QuantidadeItem = 55, ValorEstimadoItem = 30.00m, ValorHomologadoItem = 25.05m, ValorEstimadoTotal = 55*30.00m, ValorHomologadoTotal = 55*25.05m, DataInicio = new DateTime(2023, 9, 1), DataFim = new DateTime(2023, 10, 7), Status = "Concluído" },
-                new Licitacao { SecretariaId = secretarias[0].SecretariaId, ItemId = items[0].ItemId, FornecedorId = fornecedores[0].FornecedorId, QuantidadeItem = 45, ValorEstimadoItem = 30.00m, ValorHomologadoItem = 19.90m, ValorEstimadoTotal = 45*30.00m, ValorHomologadoTotal = 45*19.90m, DataInicio = new DateTime(2024, 4, 23), DataFim = new DateTime(2024, 5, 29), Status = "Concluído" },
-                new Licitacao { SecretariaId = secretarias[0].SecretariaId, ItemId = items[1].ItemId, FornecedorId = fornecedores[1].FornecedorId, QuantidadeItem = 130, ValorEstimadoItem = 15.00m, ValorHomologadoItem = 14.00m, ValorEstimadoTotal = 130*15.00m, ValorHomologadoTotal = 130*14.00m, DataInicio = new DateTime(2024, 4, 19), DataFim = new DateTime(2024, 6, 20), Status = "Concluído" },
-                new Licitacao { SecretariaId = secretarias[0].SecretariaId, ItemId = items[1].ItemId, FornecedorId = fornecedores[1].FornecedorId, QuantidadeItem = 150, ValorEstimadoItem = 15.00m, ValorHomologadoItem = 14.00m, ValorEstimadoTotal = 150*15.00m, ValorHomologadoTotal = 150*14.00m, DataInicio = new DateTime(2024, 4, 19), DataFim = new DateTime(2024, 6, 20), Status = "Concluído" },
-                new Licitacao { SecretariaId = secretarias[0].SecretariaId, ItemId = items[1].ItemId, FornecedorId = fornecedores[1].FornecedorId, QuantidadeItem = 150, ValorEstimadoItem = 15.00m, ValorHomologadoItem = 14.00m, ValorEstimadoTotal = 150*15.00m, ValorHomologadoTotal = 150*14.00m, DataInicio = new DateTime(2024, 4, 19), DataFim = new DateTime(2024, 6, 20), Status = "Concluído" },
-                new Licitacao { SecretariaId = secretarias[0].SecretariaId, ItemId = items[2].ItemId, FornecedorId = fornecedores[2].FornecedorId, QuantidadeItem = 90, ValorEstimadoItem = 7.00m, ValorHomologadoItem = 5.00m, ValorEstimadoTotal = 90*7.00m, ValorHomologadoTotal = 90*5.00m, DataInicio = new DateTime(2024, 4, 9), DataFim = new DateTime(2024, 6, 11), Status = "Em Andamento" },
+                new Licitacao { SecretariaId = secretarias[0].SecretariaId, ItemId = items[0].ItemId, NumeroProcesso = "0043.002064/2020-43", NumeroCertame="00651/2021", FornecedorId = fornecedores[0].FornecedorId, QuantidadeItem = 300, ValorEstimadoItem = 2900.00m, ValorHomologadoItem = 2833.33m, ValorEstimadoTotal = 870000.00m, ValorHomologadoTotal = 850000.00m, DataInicio = new DateTime(2020, 1, 15), DataFim = new DateTime(2020, 3, 15), Status = "Concluído" },
+                new Licitacao { SecretariaId = secretarias[0].SecretariaId, ItemId = items[0].ItemId, NumeroProcesso = "0067.002567/2022-98", NumeroCertame="00542/2022",FornecedorId = fornecedores[0].FornecedorId, QuantidadeItem = 250, ValorEstimadoItem = 2920.00m, ValorHomologadoItem = 2880.00m, ValorEstimadoTotal = 730000.00m, ValorHomologadoTotal = 720000.00m, DataInicio = new DateTime(2022, 1, 18), DataFim = new DateTime(2021, 3, 28), Status = "Concluído" },
+                new Licitacao { SecretariaId = secretarias[0].SecretariaId, ItemId = items[0].ItemId, NumeroProcesso = "0044.000100/2023-49", NumeroCertame="00011/2023",FornecedorId = fornecedores[0].FornecedorId, QuantidadeItem = 350, ValorEstimadoItem = 2171.43m, ValorHomologadoItem = 2114.28m, ValorEstimadoTotal = 760000.00m, ValorHomologadoTotal = 740000.00m, DataInicio = new DateTime(2024, 2, 1), DataFim = new DateTime(2024, 4, 29), Status = "Concluído" },
+                new Licitacao { SecretariaId = secretarias[0].SecretariaId, ItemId = items[1].ItemId, NumeroProcesso = "0023.006454/2024-43", NumeroCertame="00651/2024", FornecedorId = fornecedores[1].FornecedorId, QuantidadeItem = 130, ValorEstimadoItem = 15.00m, ValorHomologadoItem = 14.00m, ValorEstimadoTotal = 130*15.00m, ValorHomologadoTotal = 130*14.00m, DataInicio = new DateTime(2024, 4, 19), DataFim = new DateTime(2024, 6, 20), Status = "Concluído" },
+                new Licitacao { SecretariaId = secretarias[0].SecretariaId, ItemId = items[1].ItemId, NumeroProcesso = "0065.002066/2024-45", NumeroCertame="00345/2024", FornecedorId = fornecedores[1].FornecedorId, QuantidadeItem = 150, ValorEstimadoItem = 15.00m, ValorHomologadoItem = 14.00m, ValorEstimadoTotal = 150*15.00m, ValorHomologadoTotal = 150*14.00m, DataInicio = new DateTime(2024, 4, 19), DataFim = new DateTime(2024, 6, 20), Status = "Concluído" },
+                new Licitacao { SecretariaId = secretarias[0].SecretariaId, ItemId = items[1].ItemId, NumeroProcesso = "0043.002111/2024-24", NumeroCertame="00456/2024", FornecedorId = fornecedores[1].FornecedorId, QuantidadeItem = 150, ValorEstimadoItem = 15.00m, ValorHomologadoItem = 14.00m, ValorEstimadoTotal = 150*15.00m, ValorHomologadoTotal = 150*14.00m, DataInicio = new DateTime(2024, 4, 19), DataFim = new DateTime(2024, 6, 20), Status = "Concluído" },
+                new Licitacao { SecretariaId = secretarias[0].SecretariaId, ItemId = items[2].ItemId, NumeroProcesso = "0012.002444/2024-44", NumeroCertame="00745/2024", FornecedorId = fornecedores[2].FornecedorId, QuantidadeItem = 90, ValorEstimadoItem = 7.00m, ValorHomologadoItem = 5.00m, ValorEstimadoTotal = 90*7.00m, ValorHomologadoTotal = 90*5.00m, DataInicio = new DateTime(2024, 4, 9), DataFim = new DateTime(2024, 6, 11), Status = "Em Andamento" },
             };
             licitacoes.ForEach(l => _context.Licitacoes.Add(l));
 
