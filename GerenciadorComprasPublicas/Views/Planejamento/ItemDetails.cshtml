@@ -99,30 +99,37 @@
                             <th>Quantidade</th>
                             <th>Valor estimado</th>
                             <th>Valor homologado</th>
+                            <th>Economia (%)</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var licitacao in ViewBag.Amostragem)
                         {
+                            var economia = (licitacao.ValorEstimadoTotal - licitacao.ValorHomologadoTotal) / licitacao.ValorEstimadoTotal * 100;
                             <tr>
                                 <td>@licitacao.NumeroProcesso</td>
                                 <td>@licitacao.NumeroCertame</td>
                                 <td>@licitacao.DataInicio.ToString("dd-MM-yyyy")</td>
                                 <td>@licitacao.DataFim.ToString("dd-MM-yyyy")</td>
                                 <td>@licitacao.QuantidadeItem</td>
-                                <td>@licitacao.ValorEstimadoTotal</td>
-                                <td>@licitacao.ValorHomologadoTotal</td>
+                                <td>@licitacao.ValorEstimadoTotal.ToString("C")</td>
+                                <td>@licitacao.ValorHomologadoTotal.ToString("C")</td>
+                                <td>@economia.ToString("0.00")%</td>
                             </tr>
                         }
                     </tbody>
                 </table>
+
             </div>
         </div>
 
         <!-- Gráfico das Datas Importantes na Linha do Tempo -->
-        <div class="col-sm-12 chart-container">
-            <canvas id="timelineChart"></canvas>
+        <div class="mt-4">
+            <div class="col-sm-7 chart-container m-auto">
+                <canvas id="timelineChart"></canvas>
+            </div>
         </div>
+        
     </div>
 </div>
 

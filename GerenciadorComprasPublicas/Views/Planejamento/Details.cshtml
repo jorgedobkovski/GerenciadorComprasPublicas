@@ -13,7 +13,6 @@
             <th>Item</th>
             <th>Quantidade Planejada</th>
             <th>Valor Estimado</th>
-            <th>Valor Gasto</th>
             <th>Ações</th>
         </tr>
     </thead>
@@ -25,7 +24,6 @@
                 <td>@item.ItemNome</td>
                 <td>@item.QuantidadePlanejada</td>
                 <td>@item.ValorEstimado.ToString("C")</td>
-                <td>@item.ValorGasto.ToString("C")</td>
                 <td>
                     <a asp-action="ItemDetails" asp-route-id="@item.Id" class="btn btn-primary">Detalhes</a>
                 </td>

@@ -23,9 +23,9 @@
     </div>
     <div class="form-group">
         @Html.LabelFor(model => model.DataCriacao, new { @class = "control-label col-md-12" })
-        <div class="col-md-12">
-            @Html.EditorFor(model => model.DataCriacao, new { htmlAttributes = new { @class = "form-control" } })
-        </div>
+            <div class="col-md-12">
+                @Html.TextBoxFor(model => model.DataCriacao, "{0:yyyy-MM-dd}", new { @class = "form-control", @type = "date" })
+            </div>
     </div>
     <div class="form-group">
         @Html.LabelFor(model => model.Descricao, new { @class = "control-label col-md-12" })
@@ -49,6 +49,8 @@
 </div>
 
 @section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
     <script type="text/javascript">
         var itemIndex = 0;
 
@@ -72,11 +74,11 @@
                             </div>
                             <label class="control-label col-md-2">Valor Estimado</label>
                             <div class="col-md-10">
-                                <input type="number" step="0.01" name="ItensPlanejados[${itemIndex}].ValorEstimado" class="form-control" />
+                            <input type="text" step="0.01" name="ItensPlanejados[${itemIndex}].ValorEstimado" class="form-control valor-estimado" />
                             </div>
-                            <label class="control-label col-md-2">Valor Gasto</label>
-                            <div class="col-md-10">
-                                <input type="number" step="0.01" name="ItensPlanejados[${itemIndex}].ValorGasto" class="form-control" />
+                            <label class="control-label col-md-2 d-none">Valor Gasto</label>
+                            <div class="col-md-10 d-none">
+                                <input type="number" value="0" step="0.01" name="ItensPlanejados[${itemIndex}].ValorGasto" class="form-control" />
                             </div>
                             <label class="control-label col-md-2">Data Última Atualização</label>
                             <div class="col-md-10">
@@ -89,11 +91,18 @@
 
             container.insertAdjacentHTML("beforeend", itemHtml);
             itemIndex++;
+            $('.valor-estimado').mask('000.000.000,00', { reverse: true });
         }
 
         function removeItem(index) {
             var item = document.getElementById(`item-${index}`);
             item.remove();
         }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            // Aplica a máscara de dinheiro ao campo Valor Estimado
+            $('.valor-estimado').mask('000.000.000,00', { reverse: true });
+        });
+
     </script>
 }

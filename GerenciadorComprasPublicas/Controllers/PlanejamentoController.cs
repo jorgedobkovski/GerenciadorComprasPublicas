@@ -160,17 +160,22 @@ namespace GerenciadorComprasPublicas.Controllers
             var dataInicioNovoProcesso = dataEstoqueEsgotado.AddDays(-180);
 
             var licitacoes = await _context.Licitacoes
-                .Where(l => l.SecretariaId == item.PlanejamentoAnual.SecretariaId && l.ItemId == item.Id)
+                .Where(l => l.SecretariaId == item.PlanejamentoAnual.SecretariaId && l.ItemId == item.ItemId)
                 .OrderByDescending(l => l.DataInicio)
                 .Take(3)
                 .ToListAsync();
 
+            var licitacoesDoAno = await _context.Licitacoes
+                .Where(l => l.SecretariaId == item.PlanejamentoAnual.SecretariaId && l.ItemId == item.ItemId && l.DataInicio.Year == item.PlanejamentoAnual.Ano)
+                .OrderByDescending(l => l.DataInicio)
+                .ToListAsync();
 
+            var valorGasto = licitacoesDoAno.Sum(l => l.ValorHomologadoTotal);
             var viewModel = new PlanejamentoItemViewModel
             {
                 Id = item.Id,
                 ValorEstimado = item.ValorEstimado,
-                ValorGasto = item.ValorGasto,
+                ValorGasto = valorGasto,
                 QuantidadePlanejada = item.QuantidadePlanejada,
                 ItemId = item.ItemId,
                 ItemNome = item.Item.Nome,
